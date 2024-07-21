@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { userdataUserApi, touchMeApi } from '../api';
+import { userdataUserApi } from '../api';
 import { useProfileStore } from '../store';
 import { onMounted, ref } from 'vue';
 
 const profileStore = useProfileStore();
 
 const showUserWarn = ref(false);
-const showClickWarn = ref(false);
-const clickResult = ref<number | null>(null);
 
 onMounted(async () => {
 	// Get username
@@ -31,35 +29,7 @@ onMounted(async () => {
 		}
 		profileStore.full_name = nameItem?.value ?? null;
 	}
-
-	// Get touch data
-	const resp = await touchMeApi.getTouch();
-	if (resp.status != 200) {
-		showClickWarn.value = true;
-		return;
-	}
-	const data = resp.data;
-	if (!data || !data.count) {
-		showClickWarn.value = true;
-		return;
-	}
-	clickResult.value = +data.count;
 });
-
-const makeClick = async () => {
-	// Make touch
-	const resp = await touchMeApi.addTouch();
-	if (resp.status != 200) {
-		showClickWarn.value = true;
-		return;
-	}
-	const data = resp.data;
-	if (!data || !data.count) {
-		showClickWarn.value = true;
-		return;
-	}
-	clickResult.value = +data.count;
-};
 
 const location = document.location.origin + '/docs/';
 </script>
@@ -76,12 +46,6 @@ const location = document.location.origin + '/docs/';
 			=(
 		</p>
 		<p>Твой id: {{ profileStore.id }}</p>
-		<div>
-			<button @click="makeClick">Нажми чтобы увеличить каунтер</button>
-			<h2 v-if="clickResult">
-				В сумме ты кликнул эту кнопку <span>{{ clickResult }}</span> раз
-			</h2>
-		</div>
 		<div>
 			<p>
 				Документация к этому коду находится по адресу <a href="/docs/">{{ location }}</a>
