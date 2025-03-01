@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { userdataUserApi } from '../api';
-import { useProfileStore } from '../store';
+import apiClient from '@/api';
+import { useProfileStore } from '@/store';
 import { onMounted, ref } from 'vue';
 
 const profileStore = useProfileStore();
@@ -10,12 +10,13 @@ const showUserWarn = ref(false);
 onMounted(async () => {
 	// Get username
 	if (!profileStore.full_name && profileStore.id) {
-		const resp = await userdataUserApi.getById(profileStore.id);
-		if (resp.status != 200) {
+		const { response, data } = await apiClient.GET('/userdata/user/{id}', {
+			params: { path: { id: profileStore.id } },
+		});
+		if (response.status != 200) {
 			showUserWarn.value = true;
 			return;
 		}
-		const data = resp.data;
 		if (!data || !data.items) {
 			showUserWarn.value = true;
 			return;

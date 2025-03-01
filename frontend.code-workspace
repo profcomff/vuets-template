@@ -71,5 +71,8 @@
 		"typescript.tsdk": "node_modules/typescript/lib",
 		"css.validate": false,
 		"git.openRepositoryInParentFolders": "always",
+		"[vue]": {
+        	"editor.defaultFormatter": "esbenp.prettier-vscode"
+    	},
 	},
 }
