@@ -4,39 +4,26 @@ import { onMounted } from 'vue';
 
 const profileStore = useProfileStore();
 
-onMounted(() => {
+onMounted(async () => {
 	profileStore.fromUrl();
+	if (import.meta.env.MODE === 'development') await profileStore.setupDevAdminSession(null); // comment if you want only URL based auth in dev
 });
 </script>
 
 <template>
-	<main class="container">
-		<RouterView />
+	<main class="main">
+		<Suspense>
+			<RouterView />
+
+			<template #fallback> Loading... </template>
+		</Suspense>
 	</main>
-	<footer>
-		Made by
-		<a href="https://app.profcomff.com"><img src="https://app.profcomff.com/favicon.png" class="logo" /></a>
-		in association with
-		<a href="https://dyakov.space"><img src="https://dyakov.space/files/Icon.svg" class="logo" /></a>
-	</footer>
 </template>
 
 <style scoped>
-.container {
-	width: 100%;
-	height: 100%;
-}
-
-footer {
-	position: sticky;
-	bottom: 0;
-	width: 100%;
-	color: gray;
-	text-align: center;
-
-	& .logo {
-		height: 30px;
-		vertical-align: middle;
-	}
+.main {
+	width: min(900px, 100%);
+	margin: 0 auto;
+	margin-top: 3rem;
 }
 </style>
